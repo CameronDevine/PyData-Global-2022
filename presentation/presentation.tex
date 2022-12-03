@@ -1,0 +1,119 @@
+\documentclass{beamer}
+
+\renewcommand*{\ttdefault}{cmtt}
+
+\usepackage{tikz}
+\usepackage{listings}
+\lstset{language=make, frame=single, basicstyle=\ttfamily}
+
+\beamertemplatenavigationsymbolsempty
+
+\usetheme{Frankfurt}
+
+\definecolor{uwpurple}{rgb}{0.2,0,0.44}
+\definecolor{uwlightgray}{rgb}{0.85,0.85,0.85}
+
+\setbeamercolor{frametitle}{bg=uwpurple}
+\setbeamercolor{block title}{bg=uwpurple}
+\setbeamercolor{title}{bg=uwpurple}
+\setbeamercolor{block body}{bg=uwlightgray}
+\setbeamercolor{bibliography entry author}{fg=black}
+\setbeamercolor{bibliography entry note}{fg=black}
+\setbeamercolor{section title}{bg=uwpurple}
+
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{section in toc}[ball unnumbered]
+
+\setbeamerfont{footnote}{size=\tiny}
+
+\usefonttheme[onlymath]{serif}
+
+\setlength{\fboxrule}{0.8pt}
+\newcommand{\purplebox}[1]{{\color{uwpurple}\fbox{\normalcolor #1}}}
+\newcommand{\altpurplebox}[2]{\alt<#1>{\purplebox{#2}}{#2}}
+
+\title{Makefiles for Automated Replacement of Modified Plots in Reports and Presentations}
+\institute{Saint Martin's University}
+\author{Cameron Devine Ph.D.}
+\date{12/2/22}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \maketitle
+\end{frame}
+
+\section{Motivation}
+
+\begin{frame}{Motivation}
+  \begin{itemize}
+    \pause\item Reports and presentations are a common method of sharing results
+    \pause\item Plots often need to be updated
+    \begin{itemize}
+      \pause\item New data
+      \pause\item Formatting changes
+    \end{itemize}
+    \pause\item Replacing plots is time consuming and error prone
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Makefiles}
+  \begin{itemize}
+    \pause\item Commonly used when performing data analysis
+    \pause\item Can run scripts/programs when data changes
+    \pause\item Integrate document preparation into the Makefile
+  \end{itemize}
+\end{frame}
+
+\section{Details}
+
+\begin{frame}[fragile]{Basic Makefile}
+  \begin{lstlisting}
+.PHONY: all
+
+all: plot.png
+
+plot.png: plot.py data.csv
+  python $^ $@
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{\LaTeX}
+  \begin{lstlisting}
+.PHONY: all
+
+all: report.pdf
+
+plot.png: plot.py data.csv
+  python $^ $@
+
+report.pdf: report.tex plot.png
+  latexmk -pdf $<
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{LibreOffice}
+  \begin{lstlisting}
+.PHONY: all
+
+all: report.pdf
+
+plot.png: plot.py data.csv
+  python $^ $@
+
+report.pdf: report.odt plot.png
+  libreoffice --convert-to pdf $<
+  \end{lstlisting}
+\end{frame}
+
+\section{Demo}
+
+\begin{frame}
+  \begin{center}
+    \begin{tikzpicture}
+      \node [fill=uwpurple, inner sep=1em, rounded corners=8pt, minimum width=2in] {\Huge\color{white}Demo};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\end{document}
